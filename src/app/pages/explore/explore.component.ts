@@ -22,7 +22,7 @@ export class ExploreComponent implements OnInit, OnDestroy {
   private searchSubject = new Subject<string>();
   private scrollSubject = new Subject<void>();
 
-  constructor(private unsplashService: UnsplashService) {}
+  constructor(private unsplashService: UnsplashService) { }
 
   ngOnInit() {
     this.loadImages();
@@ -58,10 +58,10 @@ export class ExploreComponent implements OnInit, OnDestroy {
 
   loadImages() {
     if (this.isLoading) return;
-    
+
     this.isLoading = true;
     console.log(`[API Call] Fetching photos for page: ${this.currentPage}`);
-    
+
     this.unsplashService.getImages(this.currentPage).subscribe({
       next: (data) => {
         this.images = [...this.images, ...data];
@@ -82,10 +82,10 @@ export class ExploreComponent implements OnInit, OnDestroy {
 
   performSearch() {
     if (this.isLoading) return;
-    
+
     this.isLoading = true;
     console.log(`[API Call] Searching for "${this.searchQuery}" - page: ${this.currentPage}`);
-    
+
     this.unsplashService.searchImages(this.searchQuery, this.currentPage).subscribe({
       next: (response) => {
         this.images = [...this.images, ...response.results];
@@ -108,7 +108,7 @@ export class ExploreComponent implements OnInit, OnDestroy {
     const windowHeight = window.innerHeight;
     const scrollY = window.scrollY || window.pageYOffset;
     const documentHeight = document.documentElement.scrollHeight;
-    
+
     // Trigger when 300px from bottom
     const threshold = 300;
     const isNearBottom = (windowHeight + scrollY) >= (documentHeight - threshold);

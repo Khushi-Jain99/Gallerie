@@ -1,16 +1,44 @@
 <div class="container page-content">
-  <h1 class="page-title">My Gallery</h1>
-  <p class="page-description">Manage and view your uploaded masterpieces.</p>
-  
-  <div class="gallery-grid">
-    @for (item of [1,2,3]; track item) {
-      <div class="gallery-item glass">
-        <div class="item-placeholder"></div>
-        <div class="item-info">
-          <h4>Your Artwork #{{item}}</h4>
-          <p>Uploaded on April 25, 2026</p>
+  <div class="gallery-header">
+    <h1 class="page-title">My Collection</h1>
+    <p class="page-description">Manage and view your cloud-uploaded images.</p>
+  </div>
+
+  <!-- Loading -->
+  <div class="loading-box" *ngIf="isLoading">
+    <div class="spinner"></div>
+    <p>Opening your gallery...</p>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="!isLoading && images.length === 0">
+    <span class="material-icons large-icon">collections</span>
+    <h2>Your gallery is empty</h2>
+    <p>Upload your first image to see it appear here.</p>
+    <a routerLink="/upload" class="action-link">Start Uploading</a>
+  </div>
+
+  <!-- Grid -->
+  <div class="gallery-grid" *ngIf="!isLoading && images.length > 0">
+    <div class="gallery-card glass" *ngFor="let img of images; let i = index">
+      <div class="img-wrapper">
+        <img [src]="img.url" [alt]="img.title">
+        <div class="overlay">
+          <button class="delete-btn" (click)="deleteImage(i)">
+            <span class="material-icons">delete</span>
+          </button>
         </div>
       </div>
-    }
+      <div class="card-body">
+        <h3 class="title">{{ img.title }}</h3>
+        <p class="description" *ngIf="img.description">{{ img.description }}</p>
+        <div class="card-footer">
+          <span class="date">{{ img.createdAt | date:'mediumDate' }}</span>
+          <a [href]="img.url" target="_blank" class="view-link">
+            <span class="material-icons">open_in_new</span>
+          </a>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
