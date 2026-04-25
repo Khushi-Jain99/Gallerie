@@ -1,0 +1,16 @@
+<div class="container page-content">
+  <h1 class="page-title">My Gallery</h1>
+  <p class="page-description">Manage and view your uploaded masterpieces.</p>
+  
+  <div class="gallery-grid">
+    @for (item of [1,2,3]; track item) {
+      <div class="gallery-item glass">
+        <div class="item-placeholder"></div>
+        <div class="item-info">
+          <h4>Your Artwork #{{item}}</h4>
+          <p>Uploaded on April 25, 2026</p>
+        </div>
+      </div>
+    }
+  </div>
+</div>

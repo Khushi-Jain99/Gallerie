@@ -1,0 +1,67 @@
+<div class="container page-content">
+  <div class="upload-container glass">
+    <h1 class="page-title">Upload Image</h1>
+    <p class="page-description">Share your vision with the world. Drag & drop or click to browse.</p>
+    
+    <div class="dropzone">
+      <div class="dropzone-content">
+        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+        <p>Drop your images here, or <span>Browse</span></p>
+        <span class="file-info">Maximum file size: 50MB</span>
+      </div>
+    </div>
+    
+    <div class="upload-actions">
+      <button class="btn-primary">Upload Now</button>
+    </div>
+  </div>
+</div>
+
+<style>
+  .upload-container {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 3rem;
+    border-radius: 24px;
+  }
+  
+  .dropzone {
+    border: 2px dashed var(--glass-border);
+    border-radius: 16px;
+    padding: 4rem 2rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    margin-bottom: 2rem;
+  }
+  
+  .dropzone:hover {
+    border-color: var(--primary);
+    background: rgba(56, 189, 248, 0.05);
+  }
+  
+  .dropzone-content svg {
+    margin-bottom: 1.5rem;
+    color: var(--primary);
+  }
+  
+  .dropzone-content p {
+    font-size: 1.25rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+  }
+  
+  .dropzone-content p span {
+    color: var(--primary);
+  }
+  
+  .file-info {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+  
+  .upload-actions {
+    display: flex;
+    justify-content: flex-end;
+  }
+</style>

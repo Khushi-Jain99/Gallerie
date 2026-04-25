@@ -1,0 +1,142 @@
+.explore-container {
+  padding: 120px 5% 50px;
+  min-height: 100vh;
+  background: #0a0a0a;
+  color: white;
+}
+
+.search-section {
+  max-width: 800px;
+  margin: 0 auto 50px;
+  position: sticky;
+  top: 90px;
+  z-index: 100;
+}
+
+.search-bar-wrapper {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50px;
+  padding: 12px 25px;
+  transition: all 0.3s ease;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.search-bar-wrapper:focus-within {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(99, 102, 241, 0.5);
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.2);
+  transform: translateY(-2px);
+}
+
+.search-icon {
+  color: #888;
+  margin-right: 15px;
+}
+
+.search-input {
+  background: transparent;
+  border: none;
+  color: white;
+  width: 100%;
+  font-size: 1.1rem;
+  outline: none;
+}
+
+.search-input::placeholder {
+  color: #666;
+}
+
+.masonry-grid {
+  columns: 4 250px;
+  column-gap: 20px;
+  width: 100%;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+@media (max-width: 1200px) {
+  .masonry-grid {
+    columns: 3 200px;
+  }
+}
+
+@media (max-width: 800px) {
+  .masonry-grid {
+    columns: 2 150px;
+  }
+}
+
+@media (max-width: 500px) {
+  .masonry-grid {
+    columns: 1;
+  }
+}
+
+/* Skeleton Loader */
+.skeleton-card {
+  height: 300px;
+  background: linear-gradient(90deg, #1a1a1a 25%, #2a2a2a 50%, #1a1a1a 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+  border-radius: 16px;
+  margin-bottom: 20px;
+}
+
+.skeleton-card:nth-child(even) {
+  height: 450px;
+}
+
+.skeleton-card:nth-child(3n) {
+  height: 350px;
+}
+
+@keyframes loading {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.no-results {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 100px 0;
+  text-align: center;
+}
+
+.large-icon {
+  font-size: 64px;
+  color: #444;
+  margin-bottom: 20px;
+}
+
+.no-results h3 {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+}
+
+.no-results p {
+  color: #888;
+}
+
+.bottom-loader {
+  display: flex;
+  justify-content: center;
+  padding: 40px 0;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(255, 255, 255, 0.1);
+  border-top-color: #6366f1;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

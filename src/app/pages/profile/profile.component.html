@@ -1,0 +1,117 @@
+<div class="container page-content">
+  <div class="profile-header glass">
+    <div class="profile-avatar"></div>
+    <div class="profile-info">
+      <h1 class="page-title">John Doe</h1>
+      <p class="profile-bio">Visual Storyteller & Night Photographer</p>
+      <div class="profile-stats">
+        <span><strong>1.2k</strong> Followers</span>
+        <span><strong>450</strong> Following</span>
+        <span><strong>128</strong> Shots</span>
+      </div>
+    </div>
+    <div class="profile-actions">
+      <button class="btn-primary">Edit Profile</button>
+    </div>
+  </div>
+  
+  <div class="profile-tabs">
+    <button class="active">Uploads</button>
+    <button>Collections</button>
+    <button>Liked</button>
+  </div>
+  
+  <div class="gallery-grid">
+     @for (item of [1,2,3,4]; track item) {
+      <div class="gallery-item glass">
+        <div class="item-placeholder"></div>
+      </div>
+    }
+  </div>
+</div>
+
+<style>
+  .profile-header {
+    display: flex;
+    align-items: center;
+    padding: 3rem;
+    border-radius: 24px;
+    gap: 3rem;
+    margin-bottom: 3rem;
+  }
+  
+  .profile-avatar {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary), #a855f7);
+    flex-shrink: 0;
+  }
+  
+  .profile-info {
+    flex-grow: 1;
+  }
+  
+  .profile-bio {
+    color: var(--text-muted);
+    margin-bottom: 1.5rem;
+  }
+  
+  .profile-stats {
+    display: flex;
+    gap: 2rem;
+  }
+  
+  .profile-stats strong {
+    color: var(--text);
+  }
+  
+  .profile-tabs {
+    display: flex;
+    gap: 2rem;
+    border-bottom: 1px solid var(--glass-border);
+    margin-bottom: 2rem;
+  }
+  
+  .profile-tabs button {
+    background: transparent;
+    color: var(--text-muted);
+    padding: 1rem 0;
+    font-weight: 500;
+    position: relative;
+  }
+  
+  .profile-tabs button.active {
+    color: var(--primary);
+  }
+  
+  .profile-tabs button.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: var(--primary);
+  }
+
+  @media (max-width: 768px) {
+    .profile-header {
+      flex-direction: column;
+      text-align: center;
+      padding: 2rem;
+    }
+    
+    .profile-stats {
+      justify-content: center;
+    }
+    
+    .profile-actions {
+      width: 100%;
+    }
+    
+    .profile-actions button {
+      width: 100%;
+    }
+  }
+</style>

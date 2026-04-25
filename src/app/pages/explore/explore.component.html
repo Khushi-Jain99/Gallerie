@@ -1,0 +1,49 @@
+<div class="explore-container">
+  <div class="search-section">
+    <div class="search-bar-wrapper">
+      <span class="material-icons search-icon">search</span>
+      <input 
+        type="text" 
+        placeholder="Search for inspiration..." 
+        [ngModel]="searchQuery"
+        (input)="onSearch($event)"
+        class="search-input"
+      >
+    </div>
+  </div>
+
+  <div class="gallery-container">
+    <div class="masonry-grid" *ngIf="images.length > 0">
+      <app-image-card 
+        *ngFor="let image of images; trackBy: trackByFn" 
+        [image]="image"
+        (clicked)="openModal(image)"
+      ></app-image-card>
+    </div>
+
+    <!-- Skeleton Loaders -->
+    <div class="masonry-grid" *ngIf="isLoading && images.length === 0">
+      <div class="skeleton-card" *ngFor="let i of [1,2,3,4,5,6,7,8]"></div>
+    </div>
+
+    <!-- No Results -->
+    <div class="no-results" *ngIf="!isLoading && images.length === 0 && searchQuery">
+      <div class="no-results-content">
+        <span class="material-icons large-icon">search_off</span>
+        <h3>No results found</h3>
+        <p>Try searching for something else like "Nature", "Architecture" or "Minimal".</p>
+      </div>
+    </div>
+
+    <!-- Bottom Loader -->
+    <div class="bottom-loader" *ngIf="isLoading && images.length > 0">
+      <div class="spinner"></div>
+    </div>
+  </div>
+
+  <app-image-modal 
+    *ngIf="selectedImage" 
+    [image]="selectedImage" 
+    (closed)="closeModal()"
+  ></app-image-modal>
+</div>
