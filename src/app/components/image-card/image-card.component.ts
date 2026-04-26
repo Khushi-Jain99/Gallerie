@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { UnsplashImage } from '../../services/unsplash.service';
 
@@ -7,15 +7,24 @@ import { UnsplashImage } from '../../services/unsplash.service';
   standalone: true,
   imports: [CommonModule],
   template: `
-    <div class="image-card" (click)="onCardClick()">
-      <div class="glass-overlay"></div>
+    <div class="image-card">
+      <div class="glass-overlay" (click)="onCardClick()"></div>
       <img 
         [src]="image.urls.small" 
         [alt]="image.alt_description" 
         loading="lazy"
         class="gallery-image"
+        (click)="onCardClick()"
       >
-      <div class="card-info">
+      
+      <div class="like-container" [class.is-liked]="isLiked" (click)="toggleLike($event)">
+        <div class="like-button">
+          <span class="material-icons heart-icon">{{ isLiked ? 'favorite' : 'favorite_border' }}</span>
+        </div>
+        <span class="like-count">{{ currentLikes }}</span>
+      </div>
+
+      <div class="card-info" (click)="onCardClick()">
         <p class="photographer-name">{{ image.user.name }}</p>
       </div>
     </div>
@@ -72,6 +81,65 @@ import { UnsplashImage } from '../../services/unsplash.service';
       opacity: 1;
     }
 
+    /* Like Button Styles */
+    .like-container {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 8px;
+      border-radius: 30px;
+      background: rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      opacity: 0.6;
+    }
+
+    .image-card:hover .like-container {
+      opacity: 1;
+    }
+
+    .like-container:hover {
+      background: rgba(0, 0, 0, 0.5);
+      transform: translateY(-2px);
+    }
+
+    .like-container.is-liked {
+      background: rgba(255, 255, 255, 0.15);
+      border-color: rgba(239, 68, 68, 0.4);
+      opacity: 1;
+    }
+
+    .heart-icon {
+      font-size: 24px;
+      color: white;
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .is-liked .heart-icon {
+      color: #ef4444;
+      animation: heartPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .like-count {
+      color: white;
+      font-size: 0.75rem;
+      font-weight: 600;
+      min-width: 20px;
+      text-align: center;
+    }
+
+    @keyframes heartPop {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.4); }
+      100% { transform: scale(1); }
+    }
+
     .card-info {
       position: absolute;
       bottom: 0;
@@ -98,9 +166,51 @@ import { UnsplashImage } from '../../services/unsplash.service';
     }
   `]
 })
-export class ImageCardComponent {
+export class ImageCardComponent implements OnInit {
   @Input() image!: UnsplashImage;
   @Output() clicked = new EventEmitter<UnsplashImage>();
+
+  isLiked: boolean = false;
+  currentLikes: number = 0;
+
+  ngOnInit() {
+    this.currentLikes = this.image.likes || 0;
+    this.checkLikeStatus();
+  }
+
+  checkLikeStatus() {
+    const savedLikes = JSON.parse(localStorage.getItem('gallerie_likes') || '{}');
+    if (savedLikes[this.image.id]) {
+      this.isLiked = true;
+      // If we liked it locally, we should probably show that in the count
+      // though real apps would sync with a backend.
+      // For this local-only persistence, we'll just track the state.
+    }
+  }
+
+  toggleLike(event: Event) {
+    event.stopPropagation(); // Prevent card click trigger
+    
+    this.isLiked = !this.isLiked;
+    
+    if (this.isLiked) {
+      this.currentLikes++;
+    } else {
+      this.currentLikes--;
+    }
+
+    this.saveToLocalStorage();
+  }
+
+  saveToLocalStorage() {
+    const savedLikes = JSON.parse(localStorage.getItem('gallerie_likes') || '{}');
+    if (this.isLiked) {
+      savedLikes[this.image.id] = true;
+    } else {
+      delete savedLikes[this.image.id];
+    }
+    localStorage.setItem('gallerie_likes', JSON.stringify(savedLikes));
+  }
 
   onCardClick() {
     this.clicked.emit(this.image);
