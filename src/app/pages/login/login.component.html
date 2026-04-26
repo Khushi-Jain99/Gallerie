@@ -1,0 +1,55 @@
+<div class="auth-container page-content">
+  <div class="auth-card glass animate-fade-in">
+    <div class="auth-header">
+      <h1 class="auth-title">Welcome Back</h1>
+      <p class="auth-subtitle">Login to your Gallerie account</p>
+    </div>
+
+    <form (ngSubmit)="onSubmit()" #loginForm="ngForm" class="auth-form">
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <div class="input-wrapper">
+          <span class="material-icons">email</span>
+          <input 
+            type="email" 
+            id="email" 
+            name="email" 
+            [(ngModel)]="email" 
+            required 
+            placeholder="Enter your email"
+            #emailInput="ngModel"
+          >
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <div class="input-wrapper">
+          <span class="material-icons">lock</span>
+          <input 
+            type="password" 
+            id="password" 
+            name="password" 
+            [(ngModel)]="password" 
+            required 
+            placeholder="Enter your password"
+            #passwordInput="ngModel"
+          >
+        </div>
+      </div>
+
+      <div class="error-message" *ngIf="error">
+        <span class="material-icons">error_outline</span>
+        {{ error }}
+      </div>
+
+      <button type="submit" class="btn-primary auth-btn" [disabled]="!loginForm.form.valid">
+        Login
+      </button>
+    </form>
+
+    <div class="auth-footer">
+      <p>Don't have an account? <a routerLink="/signup" class="auth-link">Signup</a></p>
+    </div>
+  </div>
+</div>

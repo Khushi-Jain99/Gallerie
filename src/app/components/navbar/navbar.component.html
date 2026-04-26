@@ -9,9 +9,22 @@
     <ul class="nav-links">
       <li><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Home</a></li>
       <li><a routerLink="/explore" routerLinkActive="active">Explore</a></li>
-      <li><a routerLink="/my-gallery" routerLinkActive="active">My Gallery</a></li>
-      <li><a routerLink="/upload" routerLinkActive="active">Upload</a></li>
-      <li><a routerLink="/profile" routerLinkActive="active">Profile</a></li>
+      
+      <ng-container *ngIf="authService.isLoggedIn(); else authLinks">
+        <li><a routerLink="/my-gallery" routerLinkActive="active">My Gallery</a></li>
+        <li><a routerLink="/upload" routerLinkActive="active">Upload</a></li>
+        <li><a routerLink="/profile" routerLinkActive="active" class="profile-nav-link">
+          Profile
+        </a></li>
+        <li><button (click)="onLogout()" class="logout-btn">
+          <span class="material-icons">logout</span>
+        </button></li>
+      </ng-container>
+
+      <ng-template #authLinks>
+        <li><a routerLink="/login" routerLinkActive="active">Login</a></li>
+        <li><a routerLink="/signup" class="signup-nav-btn">Signup</a></li>
+      </ng-template>
     </ul>
   </div>
 </nav>

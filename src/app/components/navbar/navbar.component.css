@@ -50,6 +50,7 @@
   display: flex;
   list-style: none;
   gap: 2rem;
+  align-items: center;
 }
 
 .nav-links a {
@@ -59,6 +60,9 @@
   position: relative;
   padding: 0.5rem 0;
   transition: color 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .nav-links a:hover {
@@ -78,6 +82,53 @@
   height: 2px;
   background: var(--primary);
   border-radius: 2px;
+}
+
+.profile-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nav-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid var(--glass-border);
+  object-fit: cover;
+}
+
+.signup-nav-btn {
+  background: var(--primary);
+  color: #000 !important;
+  padding: 0.5rem 1.2rem !important;
+  border-radius: 8px;
+  font-weight: 600 !important;
+}
+
+.signup-nav-btn:hover {
+  background: var(--primary-hover) !important;
+  transform: translateY(-2px);
+}
+
+.logout-btn {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  transition: all 0.3s ease;
+  margin-left: 0.5rem;
+}
+
+.logout-btn:hover {
+  background: #ef4444;
+  color: white;
+  transform: scale(1.1);
 }
 
 @media (max-width: 768px) {

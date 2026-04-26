@@ -1,117 +1,193 @@
 <div class="container page-content">
-  <div class="profile-header glass">
-    <div class="profile-avatar"></div>
+  <!-- USER PROFILE HEADER -->
+  <div class="profile-header glass" *ngIf="user">
+    <div class="profile-avatar-container" (click)="onAvatarClick(avatarInput)">
+      <img [src]="user.avatar || 'assets/default-avatar.png'" alt="User Avatar" class="profile-avatar">
+      <div class="avatar-overlay">
+        <span class="material-icons">photo_camera</span>
+      </div>
+      <input type="file" #avatarInput (change)="onFileSelected($event)" accept="image/*" hidden>
+    </div>
+
     <div class="profile-info">
-      <h1 class="page-title">John Doe</h1>
-      <p class="profile-bio">Visual Storyteller & Night Photographer</p>
-      <div class="profile-stats">
-        <span><strong>1.2k</strong> Followers</span>
-        <span><strong>450</strong> Following</span>
-        <span><strong>128</strong> Shots</span>
+      <div class="profile-meta">
+        <ng-container *ngIf="!isEditing; else editNameTpl">
+          <h1 class="page-title">{{ user.name }}</h1>
+          <span class="user-handle" *ngIf="user.handle">{{ user.handle }}</span>
+        </ng-container>
+        <ng-template #editNameTpl>
+          <input type="text" [(ngModel)]="editName" class="edit-input name-input" placeholder="Full Name">
+        </ng-template>
+      </div>
+      
+      <p class="profile-email">{{ user.email }}</p>
+      
+      <div class="bio-container">
+        <p class="profile-bio" *ngIf="!isEditing">{{ user.bio }}</p>
+        <textarea *ngIf="isEditing" [(ngModel)]="editBio" class="edit-input bio-input" placeholder="Tell us about yourself..."></textarea>
+      </div>
+
+      <div class="profile-location-section">
+        <div class="profile-location" *ngIf="!isEditing">
+          <span class="material-icons">location_on</span>
+          <span>{{ user.location || 'Location not set' }}</span>
+        </div>
+        
+        <div class="edit-location-container" *ngIf="isEditing">
+          <div class="location-input-wrapper">
+            <span class="material-icons">location_on</span>
+            <input type="text" [(ngModel)]="editLocation" class="edit-input location-input" placeholder="City, State / Country">
+            <button type="button" class="detect-loc-btn" (click)="detectLocation()" title="Auto-detect location">
+              <span class="material-icons">my_location</span>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
+
     <div class="profile-actions">
-      <button class="btn-primary">Edit Profile</button>
+      <ng-container *ngIf="!isEditing">
+        <button class="btn-primary" (click)="toggleEdit()">
+          <span class="material-icons">edit</span>
+          Edit Profile
+        </button>
+        <button class="logout-btn-secondary" (click)="authService.logout()">
+          <span class="material-icons">logout</span>
+          Logout
+        </button>
+      </ng-container>
+      
+      <ng-container *ngIf="isEditing">
+        <button class="btn-primary" (click)="saveProfile()">
+          <span class="material-icons">check</span>
+          Save
+        </button>
+        <button class="btn-cancel" (click)="cancelEdit()">
+          <span class="material-icons">close</span>
+          Cancel
+        </button>
+      </ng-container>
     </div>
   </div>
-  
-  <div class="profile-tabs">
-    <button class="active">Uploads</button>
-    <button>Collections</button>
-    <button>Liked</button>
-  </div>
-  
-  <div class="gallery-grid">
-     @for (item of [1,2,3,4]; track item) {
-      <div class="gallery-item glass">
-        <div class="item-placeholder"></div>
+
+  <!-- IMAGE CROP MODAL -->
+  <div class="crop-modal-overlay animate-fade-in" *ngIf="showCropModal">
+    <div class="crop-modal glass">
+      <div class="crop-header">
+        <h3>Adjust Profile Picture</h3>
+        <button class="close-btn" (click)="closeCropModal()">
+          <span class="material-icons">close</span>
+        </button>
       </div>
-    }
+
+      <div class="crop-container" 
+           (mousedown)="startDrag($event)" 
+           (mousemove)="onDrag($event)" 
+           (mouseup)="stopDrag()" 
+           (mouseleave)="stopDrag()"
+           (touchstart)="startDrag($event)"
+           (touchmove)="onDrag($event)"
+           (touchend)="stopDrag()">
+        <div class="crop-mask"></div>
+        <img [src]="tempImage" 
+             [style.transform]="'translate(' + panX + 'px, ' + panY + 'px) scale(' + zoomLevel + ')'" 
+             class="crop-image">
+      </div>
+
+      <div class="crop-controls">
+        <div class="zoom-slider-container">
+          <span class="material-icons">zoom_out</span>
+          <input type="range" min="0.5" max="3" step="0.1" [(ngModel)]="zoomLevel" class="zoom-slider">
+          <span class="material-icons">zoom_in</span>
+        </div>
+        
+        <div class="crop-actions">
+          <button class="btn-cancel" (click)="closeCropModal()">Cancel</button>
+          <button class="btn-primary" (click)="saveAdjustedImage()">Save Adjusted Image</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATS SECTION -->
+  <div class="stats-row">
+    <div class="stat-card glass">
+      <span class="stat-value">{{ stats.uploads }}</span>
+      <span class="stat-label">Uploads</span>
+    </div>
+    <div class="stat-card glass">
+      <span class="stat-value">{{ stats.likes }}</span>
+      <span class="stat-label">Likes</span>
+    </div>
+    <div class="stat-card glass">
+      <span class="stat-value">{{ stats.collections }}</span>
+      <span class="stat-label">Collections</span>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="profile-tabs">
+    <button [class.active]="activeTab === 'uploads'" (click)="switchTab('uploads')">
+      <span class="material-icons">grid_view</span>
+      My Uploads
+    </button>
+    <button [class.active]="activeTab === 'liked'" (click)="switchTab('liked')">
+      <span class="material-icons">favorite</span>
+      Liked Images
+    </button>
+  </div>
+
+  <!-- CONTENT SECTION -->
+  <div class="tab-content">
+    <!-- MY UPLOADS SECTION -->
+    <div *ngIf="activeTab === 'uploads'" class="uploads-grid animate-fade-in">
+      <div class="gallery-grid" *ngIf="uploadedImages.length > 0">
+        <div class="upload-card glass" *ngFor="let img of uploadedImages">
+          <div class="img-wrapper">
+            <img [src]="img.url" [alt]="img.title">
+          </div>
+          <div class="card-body">
+            <h3 class="title">{{ img.title }}</h3>
+            <span class="date">{{ img.createdAt | date:'mediumDate' }}</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Empty State for Uploads -->
+      <div class="empty-state glass" *ngIf="uploadedImages.length === 0">
+        <span class="material-icons">cloud_upload</span>
+        <p>You haven't uploaded any images yet.</p>
+        <a routerLink="/upload" class="action-link">Upload Now</a>
+      </div>
+    </div>
+
+    <!-- LIKED IMAGES SECTION -->
+    <div *ngIf="activeTab === 'liked'" class="liked-grid animate-fade-in">
+      <div class="masonry-grid" *ngIf="likedImages.length > 0">
+        <app-image-card 
+          *ngFor="let image of likedImages" 
+          [image]="image"
+          (clicked)="openModal(image)"
+        ></app-image-card>
+      </div>
+
+      <!-- Loading State for Liked -->
+      <div class="loading-state" *ngIf="isLoadingLiked">
+        <div class="spinner"></div>
+      </div>
+
+      <!-- Empty State for Liked -->
+      <div class="empty-state glass" *ngIf="!isLoadingLiked && likedImages.length === 0">
+        <span class="material-icons">favorite_border</span>
+        <p>You haven't liked any images yet.</p>
+        <a routerLink="/explore" class="action-link">Explore Images</a>
+      </div>
+    </div>
   </div>
 </div>
 
-<style>
-  .profile-header {
-    display: flex;
-    align-items: center;
-    padding: 3rem;
-    border-radius: 24px;
-    gap: 3rem;
-    margin-bottom: 3rem;
-  }
-  
-  .profile-avatar {
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, var(--primary), #a855f7);
-    flex-shrink: 0;
-  }
-  
-  .profile-info {
-    flex-grow: 1;
-  }
-  
-  .profile-bio {
-    color: var(--text-muted);
-    margin-bottom: 1.5rem;
-  }
-  
-  .profile-stats {
-    display: flex;
-    gap: 2rem;
-  }
-  
-  .profile-stats strong {
-    color: var(--text);
-  }
-  
-  .profile-tabs {
-    display: flex;
-    gap: 2rem;
-    border-bottom: 1px solid var(--glass-border);
-    margin-bottom: 2rem;
-  }
-  
-  .profile-tabs button {
-    background: transparent;
-    color: var(--text-muted);
-    padding: 1rem 0;
-    font-weight: 500;
-    position: relative;
-  }
-  
-  .profile-tabs button.active {
-    color: var(--primary);
-  }
-  
-  .profile-tabs button.active::after {
-    content: '';
-    position: absolute;
-    bottom: -1px;
-    left: 0;
-    width: 100%;
-    height: 2px;
-    background: var(--primary);
-  }
-
-  @media (max-width: 768px) {
-    .profile-header {
-      flex-direction: column;
-      text-align: center;
-      padding: 2rem;
-    }
-    
-    .profile-stats {
-      justify-content: center;
-    }
-    
-    .profile-actions {
-      width: 100%;
-    }
-    
-    .profile-actions button {
-      width: 100%;
-    }
-  }
-</style>
+<app-image-modal 
+  *ngIf="selectedImage" 
+  [image]="selectedImage" 
+  (closed)="closeModal()"
+></app-image-modal>

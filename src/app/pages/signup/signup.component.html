@@ -1,0 +1,72 @@
+<div class="auth-container page-content">
+  <div class="auth-card glass animate-fade-in">
+    <div class="auth-header">
+      <h1 class="auth-title">Create Account</h1>
+      <p class="auth-subtitle">Join the Gallerie community today</p>
+    </div>
+
+    <form (ngSubmit)="onSubmit()" #signupForm="ngForm" class="auth-form">
+      <div class="form-group">
+        <label for="name">Full Name</label>
+        <div class="input-wrapper">
+          <span class="material-icons">person</span>
+          <input 
+            type="text" 
+            id="name" 
+            name="name" 
+            [(ngModel)]="name" 
+            required 
+            placeholder="Enter your name"
+            #nameInput="ngModel"
+          >
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <div class="input-wrapper">
+          <span class="material-icons">email</span>
+          <input 
+            type="email" 
+            id="email" 
+            name="email" 
+            [(ngModel)]="email" 
+            required 
+            placeholder="Enter your email"
+            #emailInput="ngModel"
+          >
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <div class="input-wrapper">
+          <span class="material-icons">lock</span>
+          <input 
+            type="password" 
+            id="password" 
+            name="password" 
+            [(ngModel)]="password" 
+            required 
+            minlength="6"
+            placeholder="Min. 6 characters"
+            #passwordInput="ngModel"
+          >
+        </div>
+      </div>
+
+      <div class="error-message" *ngIf="error">
+        <span class="material-icons">error_outline</span>
+        {{ error }}
+      </div>
+
+      <button type="submit" class="btn-primary auth-btn" [disabled]="!signupForm.form.valid">
+        Create Account
+      </button>
+    </form>
+
+    <div class="auth-footer">
+      <p>Already have an account? <a routerLink="/login" class="auth-link">Login</a></p>
+    </div>
+  </div>
+</div>
